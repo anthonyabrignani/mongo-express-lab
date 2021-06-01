@@ -1,0 +1,19 @@
+import express from 'express';
+import { getClient } from '../db';
+import { ObjectId } from 'mongodb';
+import Item from '../model/Item';
+
+const routes = express.Router();
+
+routes.get("/", async (req, res) => {
+    try {
+      const client = await getClient();
+      const results = await client.db().collection<Item>('cartItems').find().toArray();
+      res.json(results); // send JSON results
+    } catch (err) {
+      console.error("FAIL", err);
+      res.status(500).json({message: "Internal Server Error"});
+    }
+  });
+
+  export default routes;
